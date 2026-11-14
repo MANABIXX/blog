@@ -1,11 +1,8 @@
-name: Deploy Hugo site to Pages
-
-env:
-  DART_SASS_VERSION: "1.108.2"
+name: Hugo Stack v4 build and deploy
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -22,44 +19,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-
+        uses: actions/checkout@v4
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v5
         with:
-          go-version: "stable"
-
-      - name: Setup Hugo
+          go-version: stable
+      - name: Setup Hugo Extended
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: "latest"
+          hugo-version: latest
           extended: true
-
-      - name: Install Dart Sass
+      - name: Verify toolchain and resolve Stack v4
         run: |
-          mkdir -p "$HOME/.local"
-          curl -fsSL "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" -o "$RUNNER_TEMP/dart-sass.tar.gz"
-          tar -C "$HOME/.local" -xf "$RUNNER_TEMP/dart-sass.tar.gz"
-          echo "$HOME/.local/dart-sass" >> "$GITHUB_PATH"
-          "$HOME/.local/dart-sass/sass" --embedded --version
-
-      - name: Resolve Hugo theme module
-        run: hugo mod get
-
+          hugo version
+          go version
+          hugo mod get
       - name: Build
         run: hugo --minify --printPathWarnings
-
       - name: Verify generated site
         run: |
           test -s public/index.html
           test -s public/robots.txt
           test -s public/sitemap.xml
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./public
-
   deploy:
     environment:
       name: github-pages
@@ -69,4 +54,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
