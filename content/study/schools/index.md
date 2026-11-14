@@ -4,6 +4,8 @@ description: "青藍泰斗高校・佐野松桜高校などの受験対策"
 date: 2026-11-14
 url: "/study/schools/"
 noindex: true
+build:
+  list: never
 sitemap:
   disable: true
 ---
