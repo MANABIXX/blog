@@ -8,13 +8,14 @@
 - Hosting: GitHub Pages
 
 ## Preview
+
 ```bash
 hugo server -D
 ```
 
-## Content policy
-- Public posts never reveal personal names, school records, private goals, or identifying information.
-- School-specific guidance and personal encouragement live on unlisted, noindex pages reachable from the 下積みモード entry only.
-- Unlisted pages are not authentication-protected; anyone with the direct URL may access them.
-- Verify changing admissions information against official primary sources and state the checked date.
-- Do not publish fabricated experiences, scores, quotes, or citations.
+## Editorial policy
+
+- 読者が実践できる具体的な学習の工夫を紹介します。
+- 個人名、個人を特定できる情報、非公開の学習記録は掲載しません。
+- 入試情報など変動する情報は公式一次資料を確認し、確認日と出典を記載します。
+- 外部の画像・資料を使用する場合は、利用条件と出典を確認します。
