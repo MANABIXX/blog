@@ -1,4 +1,7 @@
-name: Hugo Stack v4 build and deploy
+name: Deploy MANABIXX Blog (Hugo Theme Stack v4)
+
+env:
+  DART_SASS_VERSION: "1.108.2"
 
 on:
   push:
@@ -19,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: stable
       - name: Setup Hugo Extended
@@ -29,10 +32,16 @@ jobs:
         with:
           hugo-version: latest
           extended: true
-      - name: Verify toolchain and resolve Stack v4
+      - name: Install Dart Sass
+        run: |
+          mkdir -p "$HOME/.local"
+          curl -fsSL "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" -o "$RUNNER_TEMP/dart-sass.tar.gz"
+          tar -C "$HOME/.local" -xf "$RUNNER_TEMP/dart-sass.tar.gz"
+          echo "$HOME/.local/dart-sass" >> "$GITHUB_PATH"
+          "$HOME/.local/dart-sass/sass" --embedded --version
+      - name: Resolve Hugo Stack v4 module
         run: |
           hugo version
-          go version
           hugo mod get
       - name: Build
         run: hugo --minify --printPathWarnings
@@ -42,7 +51,7 @@ jobs:
           test -s public/robots.txt
           test -s public/sitemap.xml
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./public
   deploy:
@@ -54,4 +63,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
