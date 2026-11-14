@@ -43,6 +43,7 @@ jobs:
         run: |
           hugo version
           hugo mod get
+          hugo mod tidy
       - name: Build
         run: hugo --minify --printPathWarnings
       - name: Verify generated site
@@ -50,6 +51,9 @@ jobs:
           test -s public/index.html
           test -s public/robots.txt
           test -s public/sitemap.xml
+          test -s public/study/index.html
+          test -s public/study/schools/index.html
+          test -s public/study/for-you/index.html
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
