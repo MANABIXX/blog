@@ -8,11 +8,10 @@ enableRobotsTXT = true
 
 [module]
   [[module.imports]]
-    path = "github.com/CaiJimmy/hugo-theme-stack/v3"
+    path = "github.com/CaiJimmy/hugo-theme-stack/v4"
 
 [params]
   mainSections = ["posts"]
-  featuredImageField = "image"
   rssFullContent = true
 
 [params.footer]
@@ -26,8 +25,7 @@ enableRobotsTXT = true
   emoji = "🖥️"
   subtitle = "勉強の工夫と、日々の気づきを。"
 
-[params.sidebar.avatar]
-  enabled = false
+  avatar = ""
 
 [params.article]
   math = false
