@@ -33,7 +33,7 @@ jobs:
           extended: true
 
       - name: Install Dart Sass CLI
-        run: npm install --global sass
+        run: npm install --global --allow-scripts=@parcel/watcher sass
 
       - name: Resolve Hugo theme module
         run: hugo mod get
