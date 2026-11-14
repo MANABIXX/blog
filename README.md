@@ -3,8 +3,8 @@
 勉強法・学習習慣・受験準備・モチベーションを扱う独立ブログです。
 
 - URL: https://manabixx.github.io/blog/
-- Framework: Hugo
-- Theme: Hugo Theme Stack v3（Hugo Modulesで取得）
+- Framework: Hugo Extended
+- Theme: Hugo Theme Stack v4.0.3（Hugo Modulesで取得）
 - Hosting: GitHub Pages
 
 ## Preview
