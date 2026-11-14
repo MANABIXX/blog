@@ -5,6 +5,8 @@ date: 2026-11-14
 url: "/study/"
 layout: "single"
 noindex: true
+build:
+  list: never
 sitemap:
   disable: true
 ---
