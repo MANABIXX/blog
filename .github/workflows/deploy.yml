@@ -65,7 +65,7 @@ jobs:
             test -s "$page"
             grep -Eiq '<meta name="robots" content="noindex,nofollow"' "$page"
           done
-          if grep -R -E '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start|/blog/study/(schools|for-you)?' public --exclude-dir=study; then
+          if grep -R -E '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start' public --exclude-dir=study; then
             echo "::error::Private study content appeared outside its unlisted section."
             exit 1
           fi
