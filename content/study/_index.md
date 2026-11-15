@@ -3,6 +3,7 @@ title: "あなた専用の対策ブログ"
 description: "下積みモードから開く、受験対策と学習メモ"
 date: 2026-11-14
 url: "/study/"
+outputs: ["HTML"]
 layout: "single"
 noindex: true
 build:
