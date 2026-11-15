@@ -3,6 +3,7 @@ title: "あなたへ"
 description: "勉強に戻るための、率直なメッセージ"
 date: 2026-11-14
 url: "/study/for-you/"
+outputs: ["HTML"]
 noindex: true
 build:
   list: never
