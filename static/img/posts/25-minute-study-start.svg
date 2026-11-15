@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">最初の25分だけ勉強する</title><desc id="desc">教材を開き、問題を解き、間違いを直すための25分の学習時間</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#161b22"/><stop offset="1" stop-color="#343d48"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#bg)"/><text x="80" y="100" fill="#f0a75e" font-family="sans-serif" font-size="22" letter-spacing="5">MANABIXX / DAILY STUDY</text>
+<text x="80" y="220" fill="#f6f7f8" font-family="sans-serif" font-size="62" font-weight="700">やる気を待たない。</text><text x="80" y="300" fill="#f6f7f8" font-family="sans-serif" font-size="48">まず、25分だけ始める。</text>
+<circle cx="910" cy="300" r="170" fill="#202c36" stroke="#e9a05c" stroke-width="8"/><circle cx="910" cy="300" r="140" fill="none" stroke="#566977" stroke-width="18"/><path d="M910 160 A140 140 0 1 1 780 350" fill="none" stroke="#e9a05c" stroke-width="18" stroke-linecap="round"/><path d="M910 215v90l58 34" fill="none" stroke="#f6f7f8" stroke-width="12" stroke-linecap="round"/>
+<text x="910" y="390" text-anchor="middle" fill="#f6f7f8" font-family="sans-serif" font-size="34" font-weight="700">25:00</text>
+<rect x="80" y="405" width="560" height="100" rx="18" fill="#202c36" stroke="#586977" stroke-width="2"/><text x="115" y="465" fill="#e9a05c" font-family="sans-serif" font-size="28" font-weight="700">教材を開く → 1問解く → 直す</text>
+<text x="80" y="575" fill="#c5cdd3" font-family="sans-serif" font-size="20">気分が変わるのを待つより、最初の一手を小さくする。</text></svg>
