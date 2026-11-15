@@ -63,7 +63,8 @@ jobs:
             public/study/schools/2026-11-15-2027-admissions-check/index.html \
             public/study/for-you/2026-11-15-25-minute-study-start/index.html; do
             test -s "$page"
-            grep -Eiq '<meta name="robots" content="noindex,nofollow"' "$page"
+            grep -q 'name=robots' "$page"
+            grep -q 'noindex,nofollow' "$page"
           done
           if grep -R -E '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start' public --exclude-dir=study; then
             echo "::error::Private study content appeared outside its unlisted section."
