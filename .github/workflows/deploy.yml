@@ -54,6 +54,21 @@ jobs:
           test -s public/study/index.html
           test -s public/study/schools/index.html
           test -s public/study/for-you/index.html
+      - name: Verify private study pages are not indexed or listed
+        run: |
+          for page in \
+            public/study/index.html \
+            public/study/schools/index.html \
+            public/study/for-you/index.html \
+            public/study/schools/2026-11-15-2027-admissions-check/index.html \
+            public/study/for-you/2026-11-15-25-minute-study-start/index.html; do
+            test -s "$page"
+            grep -Eiq '<meta name="robots" content="noindex,nofollow"' "$page"
+          done
+          if grep -R -E '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start|/blog/study/(schools|for-you)?' public --exclude-dir=study; then
+            echo "::error::Private study content appeared outside its unlisted section."
+            exit 1
+          fi
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
