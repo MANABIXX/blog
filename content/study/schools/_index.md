@@ -3,6 +3,7 @@ title: "学校別・入試対策"
 description: "青藍泰斗高校・佐野松桜高校などの受験対策"
 date: 2026-11-14
 url: "/study/schools/"
+outputs: ["HTML"]
 noindex: true
 build:
   list: never
