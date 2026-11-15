@@ -66,8 +66,17 @@ jobs:
             grep -q 'name=robots' "$page"
             grep -q 'noindex,nofollow' "$page"
           done
-          if grep -R -E '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start' public --exclude-dir=study; then
-            echo "::error::Private study content appeared outside its unlisted section."
+          test ! -e public/study/index.xml
+          test ! -e public/study/schools/index.xml
+          test ! -e public/study/for-you/index.xml
+          for feed in public/index.xml public/posts/index.xml public/sitemap.xml; do
+            if [ -f "$feed" ] && grep -Eiq '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start|/blog/study/' "$feed"; then
+              echo "::error::Private study content appeared in a public RSS feed or sitemap: $feed"
+              exit 1
+            fi
+          done
+          if find public -path public/study -prune -o -type f -print0 | xargs -0 grep -IlE '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start'; then
+            echo "::error::Private study article appeared outside the unlisted study section."
             exit 1
           fi
       - name: Upload Pages artifact
