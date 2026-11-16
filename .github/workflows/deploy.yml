@@ -1,60 +1,40 @@
-name: Build and Deploy MANABIXX Blog (Rust)
-
+name: Build and Deploy MANABIXX Blog (Hexo)
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Cache Rust build
-        uses: Swatinem/rust-cache@v2
-      - name: Install Trunk and WebAssembly target
-        run: |
-          rustup target add wasm32-unknown-unknown
-          cargo install trunk --locked
-      - name: Build Leptos interactive blog
-        working-directory: blog-ui
-        run: trunk build --release
-      - name: Build static site with Rust
-        run: cargo run --release -- content public https://manabixx.github.io/blog/
-      - name: Assemble Leptos application
-        run: |
-          mkdir -p public/app
-          cp -R blog-ui/dist/. public/app/
-      - name: Verify generated pages
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - name: Verify output
         run: |
           test -s public/index.html
           test -s public/archives/index.html
           test -s public/about/index.html
-          test -s public/search.json
-          test -s public/data/articles.sqlite
-          test -s public/app/index.html
-          test -s public/index.xml
+          test -s public/atom.xml
           test -s public/sitemap.xml
-          test -s public/robots.txt
-          test -s public/p/active-recall-7min/index.html
-          test -s public/study/for-you/2026-11-16-retry-one-wrong-question/index.html
-          grep -q 'noindex,nofollow' public/study/for-you/2026-11-16-retry-one-wrong-question/index.html
-          ! grep -q 'retry-one-wrong-question' public/sitemap.xml
-          ! grep -q 'retry-one-wrong-question' public/index.xml
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+          test -s public/2026/11/16/start-with-one-question/index.html
+          test -s public/2026/11/16/review-without-rereading/index.html
+          test -s public/2026/11/16/design-a-study-session/index.html
+          ! grep -R -q 'retry-one-wrong-question\|descriptive-answer-structure' public
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: public
   deploy:

@@ -1,0 +1,39 @@
+title: MANABIXX Blog
+subtitle: 学び方を整え、昨日より一歩進む。
+description: 学習法・思考法・デジタル活用を具体例と手順で深く解説するブログ。
+keywords: [学習法, 勉強, 思考法, MANABIXX]
+author: MANABIXX
+language: ja
+timezone: Asia/Tokyo
+url: https://manabixx.github.io/blog
+root: /blog/
+permalink: :year/:month/:day/:title/
+pretty_urls:
+  trailing_index: true
+  trailing_html: false
+source_dir: source
+public_dir: public
+new_post_name: :year-:month-:day-:title.md
+default_layout: post
+post_asset_folder: true
+render_drafts: false
+future: true
+index_generator:
+  per_page: 8
+  order_by: -date
+archive_generator:
+  per_page: 20
+  yearly: true
+  monthly: true
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+sitemap:
+  path: sitemap.xml
+theme: manabixx
+deploy:
+  type: ''
+# hexo-admin runs locally only. GitHub Pages is static hosting.
+admin:
+  deployCommand: 'git add source && git commit -m "Write blog post"'

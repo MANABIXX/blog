@@ -1,0 +1,1 @@
+<header class="page-head"><p class="eyebrow">CATEGORY</p><h1><%= page.category %></h1></header><div class="archive-list"><% page.posts.each(function(post){ %><a class="archive-item" href="<%- url_for(post.path) %>"><time><%= date(post.date,'YYYY.MM.DD') %></time><span><%= post.title %></span><b>↗</b></a><% }); %></div>
