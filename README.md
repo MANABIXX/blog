@@ -17,7 +17,7 @@ npm install
 npm run admin
 ```
 
-http://localhost:4000/admin/ を開く。通常プレビューは http://localhost:4000/blog/ 。記事を編集・保存したらGitでコミット・pushするとActionsが生成・公開する。
+http://localhost:4000/blog/admin/ を開く。通常プレビューは http://localhost:4000/blog/ 。記事を編集・保存したらGitでコミット・pushするとActionsが生成・公開する。
 
 **重要:** GitHub Pagesは静的ホスティングのため、公開URL上でhexo-adminの編集APIは動かない。管理画面はローカルで利用し、管理サーバーを無認証でインターネットへ公開しない。
 
