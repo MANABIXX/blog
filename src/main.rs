@@ -95,7 +95,7 @@ fn read_article(path: &Path, root: &Path, base: &str) -> Option<Article> {
 fn shell(title: &str, desc: &str, body: &str, base: &str, noindex: bool) -> String {
     let robots = if noindex { r#"<meta name="robots" content="noindex,nofollow">"# } else { "" };
     format!(r#"<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{}">{}<title>{} | MANABIXX Blog</title><link rel="canonical" href="{}"><link rel="stylesheet" href="{}assets/site.css"><link rel="alternate" type="application/rss+xml" title="MANABIXX Blog" href="{}index.xml"></head><body><header class="top"><a class="brand" href="{}">MANABIXX<span> BLOG</span></a><nav><a href="{}">記事</a><a href="{}about/">このブログについて</a><a href="{}archives/">アーカイブ</a></nav></header><main>{}</main><footer>MANABIXX Blog <span>学びを、わかるだけで終わらせない。</span></footer></body></html>"#,
-        esc(desc), robots, esc(title), format!("{}{}", base.trim_end_matches('/'), "/"), base, base, base, base, base, body)
+        esc(desc), robots, esc(title), format!("{}{}", base.trim_end_matches('/'), "/"), base, base, base, base, base, base, body)
 }
 fn card(a: &Article, base: &str) -> String {
     let image = if a.image.is_empty() { String::new() } else { format!(r#"<img class="thumb" src="{}" alt="{}" loading="lazy">"#, esc(&a.image), esc(&a.image_alt)) };
