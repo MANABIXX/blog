@@ -2,7 +2,7 @@ use gloo_net::http::Request;
 use leptos::prelude::*;
 use serde::Deserialize;
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 struct Article {
     title: String,
     description: String,
@@ -27,10 +27,10 @@ fn App() -> impl IntoView {
                 Ok(response) if response.ok() => {
                     match response.json::<Vec<Article>>().await {
                         Ok(items) => set_articles.set(items),
-                        Err(_) => error.set(true),
+                        Err(_) => set_error.set(true),
                     }
                 }
-                _ => error.set(true),
+                _ => set_error.set(true),
             }
             set_loading.set(false);
         });
