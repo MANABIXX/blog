@@ -61,7 +61,9 @@ jobs:
             public/study/schools/index.html \
             public/study/for-you/index.html \
             public/study/schools/2026-11-15-2027-admissions-check/index.html \
-            public/study/for-you/2026-11-15-25-minute-study-start/index.html; do
+            public/study/schools/2026-11-16-seirantaito-application-checklist/index.html \
+            public/study/for-you/2026-11-15-25-minute-study-start/index.html \
+            public/study/for-you/2026-11-16-retry-one-wrong-question/index.html; do
             test -s "$page"
             grep -q 'name=robots' "$page"
             grep -q 'noindex,nofollow' "$page"
@@ -70,7 +72,7 @@ jobs:
           test ! -e public/study/schools/index.xml
           test ! -e public/study/for-you/index.xml
           for feed in public/index.xml public/posts/index.xml public/sitemap.xml; do
-            if [ -f "$feed" ] && grep -Eiq '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start|/blog/study/' "$feed"; then
+            if [ -f "$feed" ] && grep -Eiq '2026-11-15-2027-admissions-check|2026-11-16-seirantaito-application-checklist|2026-11-15-25-minute-study-start|2026-11-16-retry-one-wrong-question|/blog/study/' "$feed"; then
               echo "::error::Private study content appeared in a public RSS feed or sitemap: $feed"
               exit 1
             fi

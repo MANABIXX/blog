@@ -20,3 +20,8 @@ sitemap:
 ## 2026年11月15日
 
 [2027年度入試の確認メモ｜青藍泰斗・佐野松桜の公式情報](/blog/study/schools/2026-11-15-2027-admissions-check/)
+
+
+## 2026年11月16日
+
+[青藍泰斗高校の2027年度入試、ネット出願前に確認したい5項目](/blog/study/schools/2026-11-16-seirantaito-application-checklist/)

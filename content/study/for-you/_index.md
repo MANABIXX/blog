@@ -20,3 +20,8 @@ sitemap:
 ## 2026年11月15日
 
 [やる気を待たずに、最初の25分だけ勉強する](/blog/study/for-you/2026-11-15-25-minute-study-start/)
+
+
+## 2026年11月16日
+
+[間違えた問題は、答えを隠してもう一度解く](/blog/study/for-you/2026-11-16-retry-one-wrong-question/)

@@ -26,3 +26,9 @@ sitemap:
 勉強を続けるためのメッセージや、今やるべきことをはっきり伝える記事を追加します。個人名は掲載しません。
 
 [あなたへ：毎日のメッセージ一覧へ](/blog/study/for-you/)
+
+
+## 今日の更新（2026年11月16日）
+
+- [青藍泰斗高校の2027年度入試、ネット出願前に確認したい5項目](/blog/study/schools/2026-11-16-seirantaito-application-checklist/)
+- [間違えた問題は、答えを隠してもう一度解く](/blog/study/for-you/2026-11-16-retry-one-wrong-question/)
