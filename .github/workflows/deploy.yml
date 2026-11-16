@@ -43,6 +43,8 @@ jobs:
           test -s public/archives/index.html
           test -s public/about/index.html
           test -s public/search.json
+          test -s public/data/articles.sqlite
+          test -s public/app/index.html
           test -s public/index.xml
           test -s public/sitemap.xml
           test -s public/robots.txt
