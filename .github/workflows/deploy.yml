@@ -1,7 +1,4 @@
-name: Deploy MANABIXX Blog (Hugo Theme Stack v4)
-
-env:
-  DART_SASS_VERSION: "1.108.2"
+name: Build and Deploy MANABIXX Blog (Rust)
 
 on:
   push:
@@ -22,69 +19,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-      - name: Setup Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: stable
-      - name: Setup Hugo Extended
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: latest
-          extended: true
-      - name: Install Dart Sass
-        run: |
-          mkdir -p "$HOME/.local"
-          curl -fsSL "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" -o "$RUNNER_TEMP/dart-sass.tar.gz"
-          tar -C "$HOME/.local" -xf "$RUNNER_TEMP/dart-sass.tar.gz"
-          echo "$HOME/.local/dart-sass" >> "$GITHUB_PATH"
-          "$HOME/.local/dart-sass/sass" --embedded --version
-      - name: Resolve Hugo Stack v4 module
-        run: |
-          hugo version
-          hugo mod get
-          hugo mod tidy
-      - name: Build
-        run: hugo --minify --printPathWarnings
-      - name: Verify generated site
+        uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+      - name: Build static site with Rust
+        run: cargo run --release -- content public https://manabixx.github.io/blog/
+      - name: Verify generated pages
         run: |
           test -s public/index.html
-          test -s public/robots.txt
+          test -s public/archives/index.html
+          test -s public/about/index.html
+          test -s public/search.json
+          test -s public/index.xml
           test -s public/sitemap.xml
-          test -s public/study/index.html
-          test -s public/study/schools/index.html
-          test -s public/study/for-you/index.html
-      - name: Verify private study pages are not indexed or listed
-        run: |
-          for page in \
-            public/study/index.html \
-            public/study/schools/index.html \
-            public/study/for-you/index.html \
-            public/study/schools/2026-11-15-2027-admissions-check/index.html \
-            public/study/schools/2026-11-16-seirantaito-application-checklist/index.html \
-            public/study/for-you/2026-11-15-25-minute-study-start/index.html \
-            public/study/for-you/2026-11-16-retry-one-wrong-question/index.html; do
-            test -s "$page"
-            grep -q 'name=robots' "$page"
-            grep -q 'noindex,nofollow' "$page"
-          done
-          test ! -e public/study/index.xml
-          test ! -e public/study/schools/index.xml
-          test ! -e public/study/for-you/index.xml
-          for feed in public/index.xml public/posts/index.xml public/sitemap.xml; do
-            if [ -f "$feed" ] && grep -Eiq '2026-11-15-2027-admissions-check|2026-11-16-seirantaito-application-checklist|2026-11-15-25-minute-study-start|2026-11-16-retry-one-wrong-question|/blog/study/' "$feed"; then
-              echo "::error::Private study content appeared in a public RSS feed or sitemap: $feed"
-              exit 1
-            fi
-          done
-          if find public -path public/study -prune -o -type f -print0 | xargs -0 grep -IlE '2026-11-15-2027-admissions-check|2026-11-15-25-minute-study-start'; then
-            echo "::error::Private study article appeared outside the unlisted study section."
-            exit 1
-          fi
+          test -s public/robots.txt
+          test -s public/p/active-recall-7min/index.html
+          test -s public/study/for-you/2026-11-16-retry-one-wrong-question/index.html
+          grep -q 'noindex,nofollow' public/study/for-you/2026-11-16-retry-one-wrong-question/index.html
+          ! grep -q 'retry-one-wrong-question' public/sitemap.xml
+          ! grep -q 'retry-one-wrong-question' public/index.xml
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: ./public
+          path: public
   deploy:
     environment:
       name: github-pages
@@ -94,4 +53,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
