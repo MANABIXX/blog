@@ -22,6 +22,15 @@ jobs:
           node-version: '20'
       - run: npm install --no-audit --no-fund
       - run: npm run build
+      - name: Smoke-test local hexo-admin endpoint
+        run: |
+          (npm run admin -- --port 4001 > /tmp/hexo-admin.log 2>&1 & echo $! > /tmp/hexo-admin.pid)
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:4001/admin/ -o /tmp/hexo-admin.html; then break; fi
+            sleep 1
+          done
+          test -s /tmp/hexo-admin.html
+          kill "$(cat /tmp/hexo-admin.pid)" || true
       - name: Verify output
         run: |
           test -s public/index.html
