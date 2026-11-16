@@ -94,7 +94,7 @@ fn read_article(path: &Path, root: &Path, base: &str) -> Option<Article> {
 }
 fn shell(title: &str, desc: &str, body: &str, base: &str, noindex: bool) -> String {
     let robots = if noindex { r#"<meta name="robots" content="noindex,nofollow">"# } else { "" };
-    format!(r#"<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{}">{}<title>{} | MANABIXX Blog</title><link rel="canonical" href="{}"><link rel="stylesheet" href="{}assets/site.css"><link rel="alternate" type="application/rss+xml" title="MANABIXX Blog" href="{}index.xml"></head><body><header class="top"><a class="brand" href="{}">MANABIXX<span> BLOG</span></a><nav><a href="{}">記事</a><a href="{}about/">このブログについて</a><a href="{}archives/">アーカイブ</a></nav></header><main>{}</main><footer>MANABIXX Blog <span>学びを、わかるだけで終わらせない。</span></footer></body></html>"#,
+    format!(r#"<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{}">{}<title>{} | MANABIXX Blog</title><link rel="canonical" href="{}"><link rel="stylesheet" href="{}assets/site.css"><link rel="alternate" type="application/rss+xml" title="MANABIXX Blog" href="{}index.xml"></head><body><header class="top"><a class="brand" href="{}">MANABIXX<span> BLOG</span></a><nav><a href="{}">記事</a><a href="{}app/">検索</a><a href="{}about/">このブログについて</a><a href="{}archives/">アーカイブ</a></nav></header><main>{}</main><footer>MANABIXX Blog <span>学びを、わかるだけで終わらせない。</span></footer></body></html>"#,
         esc(desc), robots, esc(title), format!("{}{}", base.trim_end_matches('/'), "/"), base, base, base, base, base, base, body)
 }
 fn card(a: &Article, base: &str) -> String {
@@ -144,8 +144,39 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let about = r#"<section class="page-head"><p class="eyebrow">ABOUT</p><h1>このブログについて</h1></section><div class="prose"><p>MANABIXX Blogは、勉強の工夫や学び方を、具体例と実践できる手順で届ける学習ブログです。</p><p>抽象的な精神論ではなく、今日の学習で試せる方法を大切にします。</p></div>"#;
     write(&output.join("about/index.html"), &shell("このブログについて", "MANABIXX Blogについて", about, base, false))?;
 
-    let search_data: Vec<_> = public.iter().map(|a| serde_json::json!({"title":a.title,"description":a.description,"url":format!("{}{}",base.trim_end_matches('/'),a.url),"date":a.date,"tags":a.tags,"categories":a.categories})).collect();
+    // SQLite is the canonical search index; JSON is its lightweight browser export.
+    let db_file = output.join("data/articles.sqlite");
+    fs::create_dir_all(db_file.parent().unwrap())?;
+    let db = rusqlite::Connection::open(&db_file)?;
+    db.execute_batch("CREATE TABLE articles (
+        url TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL,
+        published TEXT NOT NULL, tags TEXT NOT NULL, categories TEXT NOT NULL
+      );
+      CREATE VIRTUAL TABLE articles_fts USING fts5(title, description, tags, categories);")?;
+    for a in &public {
+        let tags = a.tags.join(" ");
+        let categories = a.categories.join(" ");
+        let url = format!("{}{}", base.trim_end_matches('/'), a.url);
+        db.execute("INSERT INTO articles VALUES (?1,?2,?3,?4,?5,?6)",
+            rusqlite::params![url, a.title, a.description, a.iso_date, tags, categories])?;
+        db.execute("INSERT INTO articles_fts VALUES (?1,?2,?3,?4)",
+            rusqlite::params![a.title, a.description, tags, categories])?;
+    }
+    let mut stmt = db.prepare("SELECT title,description,url,published,tags,categories FROM articles ORDER BY published DESC")?;
+    let rows = stmt.query_map([], |row| {
+        let tags: String = row.get(4)?;
+        let categories: String = row.get(5)?;
+        Ok(serde_json::json!({
+            "title": row.get::<_,String>(0)?, "description": row.get::<_,String>(1)?,
+            "url": row.get::<_,String>(2)?, "date": row.get::<_,String>(3)?,
+            "tags": tags.split_whitespace().collect::<Vec<_>>(),
+            "categories": categories.split_whitespace().collect::<Vec<_>>()
+        }))
+    })?;
+    let search_data: Vec<_> = rows.collect::<Result<Vec<_>,_>>()?;
     write(&output.join("search.json"), &serde_json::to_string(&search_data)?)?;
+    drop(stmt);
+    drop(db);
 
     let mut rss = String::from(r#"<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>MANABIXX Blog</title><link>"#);
     rss.push_str(base); rss.push_str("</link><description>勉強の工夫と学び方</description>");
