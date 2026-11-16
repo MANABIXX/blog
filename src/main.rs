@@ -40,8 +40,13 @@ fn slugify(path: &Path, meta: &Value) -> String {
     let explicit = string(value(meta, "slug"));
     if !explicit.is_empty() { return explicit; }
     let stem = path.file_stem().unwrap_or_default().to_string_lossy();
-    let name = stem.split_once('-').filter(|(p, _)| p.len() == 4 && p.chars().all(|c| c.is_ascii_digit()))
-        .and_then(|(_, rest)| rest.split_once('-').map(|(_, s)| s)).unwrap_or(&stem);
+    let parts: Vec<_> = stem.splitn(4, '-').collect();
+    let name = if parts.len() == 4
+        && parts[0].len() == 4 && parts[0].chars().all(|c| c.is_ascii_digit())
+        && parts[1].len() == 2 && parts[1].chars().all(|c| c.is_ascii_digit())
+        && parts[2].len() == 2 && parts[2].chars().all(|c| c.is_ascii_digit()) {
+        parts[3]
+    } else { &stem };
     name.to_lowercase().replace(' ', "-")
 }
 fn date_fields(raw: &str) -> (String, String) {
@@ -72,10 +77,10 @@ fn read_article(path: &Path, root: &Path, base: &str) -> Option<Article> {
     if title.is_empty() { return None; }
     let rel = path.strip_prefix(root).ok()?;
     let parts: Vec<_> = rel.components().map(|c| c.as_os_str().to_string_lossy().to_string()).collect();
-    let section = parts.get(1).cloned().unwrap_or_else(|| "posts".into());
+    let is_study = parts.first().map(|s| s == "study").unwrap_or(false);
+    let section = if is_study { parts.get(1).cloned().unwrap_or_else(|| "misc".into()) } else { "posts".into() };
     let slug = slugify(path, &meta);
     let (date, iso_date) = date_fields(&string(value(&meta, "date")));
-    let is_study = parts.first().map(|s| s == "study").unwrap_or(false);
     let url = if is_study { format!("/study/{section}/{slug}/") } else { format!("/p/{slug}/") };
     let image = string(value(&meta, "image"));
     let image = if image.starts_with("http") { image } else if image.is_empty() { String::new() } else { format!("{}{}", base.trim_end_matches('/'), if image.starts_with('/') { image } else { format!("/{image}") }) };
