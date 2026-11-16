@@ -1,48 +1,32 @@
 # MANABIXX Blog
 
-MANABIXX本体とは独立して運用する、学習法・学習習慣・受験準備のためのブログです。
+MANABIXX本体とは独立した記事発信専用ブログ。旧Rust/Leptos構成・既存記事を引き継がず、Hexoでゼロから再構築。
 
-- 公開URL: https://manabixx.github.io/blog/
-- 記事UI: Rust + Leptos（WebAssembly）
-- コンテンツ生成・検索DB: Rust
-- データベース: SQLite + FTS5
-- 配信: GitHub Pages（静的サイト）
-- 記事本文: Markdown + YAML front matter
+- 公開: https://manabixx.github.io/blog/
+- CMS/生成: Hexo 7
+- 編集: hexo-admin
+- 記事: Markdown + YAML Front Matter
+- テーマ: MANABIXX専用オリジナル
+- 配信: GitHub Pages + Actions
 
-## 構成
-
-- `content/posts/`: 公開記事
-- `content/study/`: 個人向けの非公開扱いページ（noindex、RSS・サイトマップから除外）
-- `src/main.rs`: Markdown記事をHTMLに変換し、SQLite検索DB・JSON検索データ・RSS・サイトマップを生成
-- `blog-ui/`: Leptos製の検索アプリ（`/blog/app/`）
-- `static/assets/site.css`: ブログ共通デザイン
-- `public/data/articles.sqlite`: ビルド時に生成するSQLite全文検索DB
-
-GitHub Pagesは静的配信のため、SQLiteはビルド時の正本・検索インデックスとして使います。LeptosのブラウザーUIには同じDBから書き出したJSONを渡します。サーバーを必要とする書き込みAPIやログイン機能は持たせません。
-
-## ローカルビルド
+## 管理画面
+Node.js 20以上を用意してリポジトリ直下で実行:
 
 ```bash
-cargo run --release -- content public https://manabixx.github.io/blog/
-rustup target add wasm32-unknown-unknown
-cargo install trunk --locked
-cd blog-ui
-trunk serve
+npm install
+npm run admin
 ```
 
-## 編集・公開
+http://localhost:4000/admin/ を開く。通常プレビューは http://localhost:4000/blog/ 。記事を編集・保存したらGitでコミット・pushするとActionsが生成・公開する。
 
-記事は `content/posts/` にMarkdownで追加します。公開記事には `title`、`date`、`description` を設定してください。個人向けページは `content/study/` に置き、公開記事と混ぜないでください。
+**重要:** GitHub Pagesは静的ホスティングのため、公開URL上でhexo-adminの編集APIは動かない。管理画面はローカルで利用し、管理サーバーを無認証でインターネットへ公開しない。
 
-`main` へのpush、またはActionsの手動実行でRustの静的生成とLeptosのWASMビルドを行い、GitHub Pagesへデプロイします。Actionsが成功するまでは公開完了とは扱いません。
+## 品質方針
+読者の悩みを一つに絞り、結論・具体例・再現手順・失敗例・改善策を書く。中学生にも伝わる自然な日本語。制度・数値・製品仕様は一次情報で確認。薄い記事の量産、個人情報や非公開学習記録の掲載は禁止。公開前にリンク・見出し・alt・スマホ表示を確認。
 
-## 編集品質
+- `source/_posts/`: 公開記事
+- `source/about/`: 固定ページ
+- `themes/manabixx/`: 専用テーマ
+- `.github/workflows/deploy.yml`: CI/CD
 
-1. 読者と悩みを冒頭で具体的に示す。
-2. 結論を先に示し、具体例・再現できる手順を含める。
-3. 失敗例と修正方法を示す。
-4. 制度・数値・製品など変動情報は公式一次資料を優先し、確認日とリンクを記載する。
-5. 中学生にも伝わる自然な日本語を使い、専門用語には説明を添える。
-6. 既存記事の言い換えを避け、薄い記事を量産しない。
-7. 個人名・個人を特定できる情報・非公開の学習記録を掲載しない。
-8. 公開前にリンク、画像alt、見出し、説明の矛盾を確認する。
+`npm run build` / `npm run server` / `npm run admin` / `npx hexo new "記事タイトル"`
