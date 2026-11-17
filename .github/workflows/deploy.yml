@@ -1,8 +1,8 @@
-name: Build and Deploy MANABIXX Blog (Hexo)
+name: Build and Deploy MANABIXX Blog + Summary
 on:
-  pull_request:
-    branches: [main]
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -17,35 +17,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - run: npm install --no-audit --no-fund
-      - run: npm run build
-      - name: Smoke-test local hexo-admin endpoint
+          fetch-depth: 0
+
+      - name: Install Zola
+        uses: taiki-e/install-action@v2
+        with:
+          tool: zola@0.21.0
+
+      - name: Build Zola blog
+        run: zola build
+
+      - name: Checkout Quartz v4
+        run: git clone --depth 1 --branch v4 https://github.com/jackyzha0/quartz.git /tmp/quartz
+
+      - name: Configure and install Quartz
+        working-directory: /tmp/quartz
         run: |
-          (npm run admin -- --port 4001 > /tmp/hexo-admin.log 2>&1 & echo $! > /tmp/hexo-admin.pid)
-          for i in $(seq 1 20); do
-            if curl -fsS http://127.0.0.1:4001/blog/admin/ -o /tmp/hexo-admin.html; then break; fi
-            sleep 1
-          done
-          test -s /tmp/hexo-admin.html
-          kill "$(cat /tmp/hexo-admin.pid)" || true
-      - name: Verify output
+          sed -i 's/pageTitle: "Quartz 4"/pageTitle: "MANABIXX 要点まとめ"/' quartz.config.ts
+          sed -i 's/baseUrl: "quartz.jzhao.xyz"/baseUrl: "manabixx.github.io"/' quartz.config.ts
+          sed -i 's/locale: "en-US"/locale: "ja-JP"/' quartz.config.ts
+          npm ci
+
+      - name: Add MANABIXX knowledge notes
+        run: |
+          mkdir -p /tmp/quartz/content
+          cp -a summary/content/. /tmp/quartz/content/
+
+      - name: Build Quartz summary
+        working-directory: /tmp/quartz
+        run: npx quartz build --output "$GITHUB_WORKSPACE/public/summary" --baseDir "/blog/summary/"
+
+      - name: Verify both sites
         run: |
           test -s public/index.html
-          test -s public/archives/index.html
-          test -s public/about/index.html
-          test -s public/atom.xml
-          test -s public/sitemap.xml
-          test -s public/2026/11/16/start-with-one-question/index.html
-          test -s public/2026/11/16/review-without-rereading/index.html
-          test -s public/2026/11/16/design-a-study-session/index.html
-          ! grep -R -q 'retry-one-wrong-question\|descriptive-answer-structure' public
+          test -s public/about.html
+          test -s public/summary/index.html
+          test -s public/summary/数学.html
+          test -s public/summary/理科.html
+          test -s public/summary/英語.html
+          test -s public/summary/技術・IT.html
+
       - uses: actions/upload-pages-artifact@v4
         with:
           path: public
+
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
