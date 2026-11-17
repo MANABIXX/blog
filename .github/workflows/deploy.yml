@@ -51,7 +51,7 @@ jobs:
       - name: Verify both sites
         run: |
           test -s public/index.html
-          test -s public/about.html
+          test -s public/about/index.html
           test -s public/summary/index.html
           test -s public/summary/数学.html
           test -s public/summary/理科.html
