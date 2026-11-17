@@ -2,7 +2,6 @@ base_url = "https://manabixx.github.io/blog"
 title = "MANABIXX Blog"
 description = "学びと技術を、深くわかりやすく。"
 default_language = "ja"
-theme = ""
 compile_sass = true
 build_search_index = true
 generate_feeds = true
