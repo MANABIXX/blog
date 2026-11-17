@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}{{ config.title }} — 学びと技術を、深くわかりやすく{% endblock %}
+{% block content %}
+<section class="hero"><p class="eyebrow">INDEPENDENT LEARNING MEDIA</p><h1>知るだけで終わらない。<br><em>理解につながる記事を。</em></h1><p class="lead">学び方、技術、考え方。具体例と実践を大切にした読み物を届けます。</p><div class="hero-links"><a class="button" href="#latest">最新の記事を読む</a><a class="text-link" href="{{ config.base_url }}/summary/">要点まとめを見る →</a></div></section>
+<section id="latest" class="section"><div class="section-heading"><div><p class="eyebrow">LATEST ARTICLES</p><h2>新着記事</h2></div><span class="muted">考えるためのヒント</span></div>
+<div class="article-grid">{% for page in section.pages %}<article class="article-card"><div class="meta">{{ page.date | date(format="%Y.%m.%d") }}{% if page.taxonomies.categories %}<span> · {{ page.taxonomies.categories | join(sep=" / ") }}</span>{% endif %}</div><h3><a href="{{ page.permalink }}">{{ page.title }}</a></h3><p>{{ page.description | default(value=page.summary | striptags | truncate(length=115)) }}</p><a class="read-more" href="{{ page.permalink }}">続きを読む <span>↗</span></a></article>{% else %}<p class="empty">記事を準備中です。</p>{% endfor %}</div></section>
+<section class="summary-promo"><div><p class="eyebrow">QUICK REFERENCE</p><h2>要点を、すばやく確認する。</h2><p>公式・用語・重要事項を整理したナレッジベース。</p></div><a class="button button-light" href="{{ config.base_url }}/summary/">要点まとめへ →</a></section>
+{% endblock %}
