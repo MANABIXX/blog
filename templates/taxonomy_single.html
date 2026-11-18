@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ term.name }} — {{ config.title }}{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">CATEGORY</p>
+  <h1>{{ term.name }}</h1>
+  <div class="article-grid">
+    {% for page in term.pages %}
+    <article class="article-card">
+      <div class="meta">{{ page.date | date(format="%Y.%m.%d") }}</div>
+      <h2><a href="{{ page.permalink }}">{{ page.title }}</a></h2>
+      <p>{{ page.description | default(value=page.summary | striptags | truncate(length=115)) }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
