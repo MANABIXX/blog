@@ -1,6 +1,7 @@
 +++
 title = "このブログについて"
 description = "MANABIXX Blogの編集方針"
+date = 2026-11-18
 +++
 
 MANABIXX Blogは、学びと技術をわかりやすく伝える記事メディアです。
