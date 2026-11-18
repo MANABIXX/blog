@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ taxonomy.name }} — {{ config.title }}{% endblock %}
+{% block content %}
+<section class="section">
+  <p class="eyebrow">TOPICS</p>
+  <h1>{{ taxonomy.name }}</h1>
+  <div class="article-grid">
+    {% for term in terms %}
+    <article class="article-card">
+      <h2><a href="{{ term.permalink }}">{{ term.name }}</a></h2>
+      <p>{{ term.pages | length }}件の記事</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
